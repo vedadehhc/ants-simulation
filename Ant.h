@@ -34,28 +34,15 @@ namespace ants
             direction = (((float)rand()) / RAND_MAX) * 2 * M_PI;
         }
 
-        void move(Uint32 elapsedMs, Screen& screen)
+        void move(Uint32 elapsedMs, float screenWidth, float screenHeight)
         {
             float deltaTime = elapsedMs / 1000.0;
 
             float dx = deltaTime * ANT_SPEED * cos(direction);
             float dy = deltaTime * ANT_SPEED * sin(direction);
 
-            float newX = x + dx;
-            float newY = y + dy;
-
-            if (newX < 0 || newX >= screen.getWidth())
-            {
-                setDirection(M_PI - direction);
-            }
-
-            if (newY < 0 || newY >= screen.getHeight())
-            {
-                setDirection(-direction);
-            }
-
-            x += dx;
-            y += dy;
+            x = clamp(x + dx, 0, screenWidth);
+            y = clamp(y + dy, 0, screenHeight);
         }
 
         // Renders the ant to the screen.

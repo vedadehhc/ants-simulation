@@ -54,7 +54,7 @@ int main(int argc, char *args[])
     screen.setEventProcessor(processEvent);
 
 
-    const int NUM_ANTS = 100;
+    const int NUM_ANTS = 1;
     Ant* ants = new Ant[NUM_ANTS];
 
     for(int i = 0; i < NUM_ANTS; i++)
@@ -75,7 +75,7 @@ int main(int argc, char *args[])
 
         for (int i = 0; i < NUM_ANTS; i++)
         {
-            ants[i].move(elapsed, screen);
+            ants[i].move(elapsed, screen.getWidth(), screen.getHeight());
             ants[i].render(screen);
         }
 
