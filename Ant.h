@@ -5,41 +5,89 @@
 #include <cmath>
 
 #include "Screen.h"
+#include "ants.h"
 
 namespace ants
 {
     class Ant
     {
     public:
-        const static float ANT_SIZE;
+        const static float ANT_SIZE, ANT_SPEED;
 
     private:
         float x, y;
         float direction;
 
     public:
-        Ant() : x(0), y(0) {}
-        Ant(float x, float y) : x(x), y(y) {}
-
-        void render(Screen &screen)
+        void setDirection(float newDir)
         {
-            int startX = std::max((int)std::floor(x - ANT_SIZE), 0);
-            int endX = std::min((int)std::ceil(x + ANT_SIZE), screen.getWidth() - 1);
+            direction = fmod(newDir, 2 * M_PI);
+        }
 
-            int startY = std::max((int)std::floor(y - ANT_SIZE), 0);
-            int endY = std::min((int)std::ceil(y + ANT_SIZE), screen.getHeight() - 1);
+    public:
+        Ant() : x(0), y(0)
+        {
+            direction = (((float)rand()) / RAND_MAX) * 2 * M_PI;
+        }
+        Ant(float x, float y) : x(x), y(y)
+        {
+            direction = (((float)rand()) / RAND_MAX) * 2 * M_PI;
+        }
 
+        void move(Uint32 elapsedMs, Screen& screen)
+        {
+            float deltaTime = elapsedMs / 1000.0;
+
+            float dx = deltaTime * ANT_SPEED * cos(direction);
+            float dy = deltaTime * ANT_SPEED * sin(direction);
+
+            float newX = x + dx;
+            float newY = y + dy;
+
+            if (newX < 0 || newX >= screen.getWidth())
+            {
+                setDirection(M_PI - direction);
+            }
+
+            if (newY < 0 || newY >= screen.getHeight())
+            {
+                setDirection(-direction);
+            }
+
+            x += dx;
+            y += dy;
+        }
+
+        // Renders the ant to the screen.
+        // Returns true if the ant is visible on the screen.
+        bool render(Screen &screen)
+        {
+            int startX = std::max((int)floor(x - ANT_SIZE), 0);
+            int endX = std::min((int)ceil(x + ANT_SIZE), screen.getWidth() - 1);
+
+            int startY = std::max((int)floor(y - ANT_SIZE), 0);
+            int endY = std::min((int)ceil(y + ANT_SIZE), screen.getHeight() - 1);
+            
+            if (startX >= screen.getWidth() || endX < 0 || startY >= screen.getHeight() || endY < 0)
+            {
+                return false;
+            }
+
+            // Try rendering on screen
+            bool result = false;
             for (int i = startX; i <= endX; i++)
             {
                 for (int j = startY; j <= endY; j++)
                 {
-                    screen.setPixel(i, j, 0xFF0000FF);
+                    // if (pointInCircle(i + 0.5, j + 0.5, x, y, ANT_SIZE))
+                    result |= screen.setPixel(i, j, 0xFF0000FF);
                 }
             }
+            return result;
         }
     };
 
-    const float Ant::ANT_SIZE = 10;
+    const float Ant::ANT_SIZE = 2, Ant::ANT_SPEED = 50;
 }
 
 #endif

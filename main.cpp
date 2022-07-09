@@ -46,7 +46,7 @@ bool processEvent(SDL_Event &e)
 
 int main(int argc, char *args[])
 {
-    Screen screen(800, 600, "Ants");
+    Screen screen(720, 720, "Ants");
 
     if (!screen.init())
         return 1;
@@ -63,13 +63,19 @@ int main(int argc, char *args[])
     }
 
     // Main game loop
+    Uint32 prevTime = SDL_GetTicks();
     bool quit = false;
     while (!quit)
     {
+        Uint32 curTime = SDL_GetTicks();
+        Uint32 elapsed = curTime - prevTime;
+        prevTime = curTime;
+
         screen.clear();
 
         for (int i = 0; i < NUM_ANTS; i++)
         {
+            ants[i].move(elapsed, screen);
             ants[i].render(screen);
         }
 
