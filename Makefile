@@ -1,5 +1,5 @@
 #OBJS specifies which files to compile as part of the project
-OBJS = main.cpp
+OBJS = main.cpp Screen.h
 
 #CC specifies which compiler we're using
 CC = g++
@@ -10,18 +10,53 @@ INCLUDE_PATHS = -I.\include
 #LIBRARY_PATHS specifies the additional library paths we'll need
 LIBRARY_PATHS = -L.\lib
 
+#BIN_PATH specifies the path to binaries to copy into build folder
+BIN_PATH = bin
+
+#RESOURCE_PATH specifies the path to application resources (images, fonts, etc.)
+RESOURCE_PATH = resources
+
 #COMPILER_FLAGS specifies the additional compilation options we're using
 # -w suppresses all warnings
 # -Wl,-subsystem,windows gets rid of the console window
 # -static-libgcc -static-libstdc++ compiles statically
-COMPILER_FLAGS = -w -Wl,-subsystem,windows -static-libgcc -static-libstdc++ 
+RELEASE_COMPILER_FLAGS = -w -Wl,-subsystem,windows -static-libgcc -static-libstdc++ 
+DEBUG_COMPILER_FLAGS = -w
 
 #LINKER_FLAGS specifies the libraries we're linking against
 LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
-#OBJ_NAME specifies the name of our exectuable
-OBJ_NAME = build\app
+#BUILD_PATH specifies the name of our exectuable
+RELEASE_BUILD_PATH = .\release
+DEBUG_BUILD_PATH = .\debug
 
 #This is the target that compiles our executable
-all : $(OBJS)
-	$(CC) $(OBJS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(OBJ_NAME)
+all: release 
+
+fresh_release: clean_release init_release release
+
+fresh_debug: clean_debug init_debug debug
+
+release: $(OBJS) 
+	$(CC) $(OBJS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(RELEASE_COMPILER_FLAGS) $(LINKER_FLAGS) -o $(RELEASE_BUILD_PATH)\app
+
+debug: $(OBJS) 
+	$(CC) $(OBJS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(DEBUG_COMPILER_FLAGS) $(LINKER_FLAGS) -o $(DEBUG_BUILD_PATH)\app
+
+init_release:
+	xcopy $(RESOURCE_PATH) $(RELEASE_BUILD_PATH) /i /s
+	xcopy $(BIN_PATH) $(RELEASE_BUILD_PATH) /i /s
+
+init_debug:
+	xcopy $(RESOURCE_PATH) $(DEBUG_BUILD_PATH) /i /s
+	xcopy $(BIN_PATH) $(DEBUG_BUILD_PATH) /i /s
+
+clean: clean_release clean_debug
+
+clean_release:
+	rd $(RELEASE_BUILD_PATH) /s /q
+	md $(RELEASE_BUILD_PATH)
+
+clean_debug:
+	rd $(DEBUG_BUILD_PATH) /s /q
+	md $(DEBUG_BUILD_PATH)
