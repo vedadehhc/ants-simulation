@@ -54,7 +54,7 @@ int main(int argc, char *args[])
     screen.setEventProcessor(processEvent);
 
 
-    const int NUM_ANTS = 1;
+    const int NUM_ANTS = 100;
     Ant* ants = new Ant[NUM_ANTS];
 
     for(int i = 0; i < NUM_ANTS; i++)
