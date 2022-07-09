@@ -18,7 +18,7 @@ bool processEvent(SDL_Event &e)
 
     if (e.type == SDL_KEYUP)
     {
-        printf("Key press!\n");
+        printf("Pressed key: %d\n", e.key.keysym.sym);
     }
     return true;
 }

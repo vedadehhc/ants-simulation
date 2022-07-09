@@ -37,19 +37,19 @@ fresh_release: clean_release init_release release
 
 fresh_debug: clean_debug init_debug debug
 
-release: $(OBJS) 
+release: $(OBJS)
 	$(CC) $(OBJS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(RELEASE_COMPILER_FLAGS) $(LINKER_FLAGS) -o $(RELEASE_BUILD_PATH)\app
 
-debug: $(OBJS) 
+debug: $(OBJS)
 	$(CC) $(OBJS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(DEBUG_COMPILER_FLAGS) $(LINKER_FLAGS) -o $(DEBUG_BUILD_PATH)\app
 
 init_release:
-	xcopy $(RESOURCE_PATH) $(RELEASE_BUILD_PATH) /i /s
-	xcopy $(BIN_PATH) $(RELEASE_BUILD_PATH) /i /s
+	xcopy $(RESOURCE_PATH) $(RELEASE_BUILD_PATH) /i /s /y
+	xcopy $(BIN_PATH) $(RELEASE_BUILD_PATH) /i /s /y
 
 init_debug:
-	xcopy $(RESOURCE_PATH) $(DEBUG_BUILD_PATH) /i /s
-	xcopy $(BIN_PATH) $(DEBUG_BUILD_PATH) /i /s
+	xcopy $(RESOURCE_PATH) $(DEBUG_BUILD_PATH) /i /s /y
+	xcopy $(BIN_PATH) $(DEBUG_BUILD_PATH) /i /s /y
 
 clean: clean_release clean_debug
 

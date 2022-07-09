@@ -27,10 +27,9 @@ private:
 	SDL_Event event;
 
 	// The window we'll be rendering to
-	SDL_Window *gWindow = NULL;
-
+	SDL_Window *m_window = NULL;
 	// The window renderer
-	SDL_Renderer *gRenderer = NULL;
+	SDL_Renderer *m_renderer = NULL;
 
 public:
 	Screen(int width, int height) : width(width), height(height), title("App") {}
@@ -50,16 +49,16 @@ public:
 		else
 		{
 			// Create window
-			gWindow = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
-			if (gWindow == NULL)
+			m_window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
+			if (m_window == NULL)
 			{
 				printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
 				success = false;
 			}
 			else
 			{
-				gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
-				if (gRenderer == NULL)
+				m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
+				if (m_renderer == NULL)
 				{
 					printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
 					success = false;
@@ -67,20 +66,20 @@ public:
 				else
 				{
 					// Initialize renderer color
-					SDL_SetRenderDrawColor(gRenderer, 0, 0, 0, 0xFF);
-					SDL_RenderClear(gRenderer);
+					SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 0xFF);
+					SDL_RenderClear(m_renderer);
 
 					// draw loading symbols
-					SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+					SDL_SetRenderDrawColor(m_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 					SDL_Rect one = {width / 2 - 20, height / 2, 10, 10};
 					SDL_Rect two = {width / 2, height / 2, 10, 10};
 					SDL_Rect three = {width / 2 + 20, height / 2, 10, 10};
-					SDL_RenderFillRect(gRenderer, &one);
-					SDL_RenderFillRect(gRenderer, &two);
-					SDL_RenderFillRect(gRenderer, &three);
+					SDL_RenderFillRect(m_renderer, &one);
+					SDL_RenderFillRect(m_renderer, &two);
+					SDL_RenderFillRect(m_renderer, &three);
 
 					// Update the renderer
-					SDL_RenderPresent(gRenderer);
+					SDL_RenderPresent(m_renderer);
 
 					// Initialize image loading
 					int imgFlags = IMG_INIT_PNG;
@@ -142,10 +141,10 @@ public:
 
 	bool freeWindow()
 	{
-		SDL_DestroyRenderer(gRenderer);
-		SDL_DestroyWindow(gWindow);
-		gRenderer = NULL;
-		gWindow = NULL;
+		SDL_DestroyRenderer(m_renderer);
+		SDL_DestroyWindow(m_window);
+		m_renderer = NULL;
+		m_window = NULL;
 	}
 
 	// Frees media and closes SDL
