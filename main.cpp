@@ -25,16 +25,15 @@ bool processEvent(SDL_Event &e)
 
 int main(int argc, char *args[])
 {
-    Screen screen(800, 600);
+    Screen screen(800, 600, "Ants");
 
     if (!screen.init())
         return 1;
 
     screen.setEventProcessor(processEvent);
 
-    SDL_Event e;
+    // Main game loop
     bool quit = false;
-
     while (!quit)
     {
         quit = !screen.processEvents();
