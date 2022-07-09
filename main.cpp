@@ -7,9 +7,9 @@
 #include <stdlib.h>
 
 #include "Screen.h"
+#include "Ant.h"
 
-// int pixelX = 0;
-// int pixelY = 0;
+using namespace ants;
 
 bool processEvent(SDL_Event &e)
 {
@@ -53,13 +53,25 @@ int main(int argc, char *args[])
 
     screen.setEventProcessor(processEvent);
 
+
+    const int NUM_ANTS = 100;
+    Ant* ants = new Ant[NUM_ANTS];
+
+    for(int i = 0; i < NUM_ANTS; i++)
+    {
+        ants[i] = Ant(rand() % screen.getWidth(), rand() % screen.getHeight());
+    }
+
     // Main game loop
     bool quit = false;
     while (!quit)
     {
         screen.clear();
 
-        // screen.setPixel(pixelX, pixelY, 0xFF0000FF);
+        for (int i = 0; i < NUM_ANTS; i++)
+        {
+            ants[i].render(screen);
+        }
 
         // Draw screen
         screen.update();
@@ -67,6 +79,7 @@ int main(int argc, char *args[])
         quit = !screen.processEvents();
     }
 
+    delete[] ants;
     screen.close();
 
     return 0;
