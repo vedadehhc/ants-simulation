@@ -56,7 +56,7 @@ public:
 		}
 
 		// Create renderer
-		m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
+		m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 		if (m_renderer == NULL)
 		{
 			printf("Renderer could not be created! SDL Error: %s\n", SDL_GetError());
@@ -81,20 +81,20 @@ public:
 		}
 
 		// Initialize renderer color
-		SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 0xFF);
-		SDL_RenderClear(m_renderer);
+		// SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 0xFF);
+		// SDL_RenderClear(m_renderer);
 
-		// draw loading symbols
-		SDL_SetRenderDrawColor(m_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-		SDL_Rect one = {width / 2 - 20, height / 2, 10, 10};
-		SDL_Rect two = {width / 2, height / 2, 10, 10};
-		SDL_Rect three = {width / 2 + 20, height / 2, 10, 10};
-		SDL_RenderFillRect(m_renderer, &one);
-		SDL_RenderFillRect(m_renderer, &two);
-		SDL_RenderFillRect(m_renderer, &three);
+		// // draw loading symbols
+		// SDL_SetRenderDrawColor(m_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+		// SDL_Rect one = {width / 2 - 20, height / 2, 10, 10};
+		// SDL_Rect two = {width / 2, height / 2, 10, 10};
+		// SDL_Rect three = {width / 2 + 20, height / 2, 10, 10};
+		// SDL_RenderFillRect(m_renderer, &one);
+		// SDL_RenderFillRect(m_renderer, &two);
+		// SDL_RenderFillRect(m_renderer, &three);
 
-		// Update the renderer
-		SDL_RenderPresent(m_renderer);
+		// // Update the renderer
+		// SDL_RenderPresent(m_renderer);
 
 		// Initialize image loading
 		// int imgFlags = IMG_INIT_PNG;
@@ -119,9 +119,17 @@ public:
 		// }
 
 		m_buffer = new Uint32[width * height];
-		memset(m_buffer, 0, width * height * sizeof(Uint32));
+		clear();
 
 		return true;
+	}
+
+	void clear()
+	{
+		for (int i = 0; i < width * height; i++)
+		{
+			m_buffer[i] = 0x000000FF;
+		}
 	}
 
 	bool setPixel(int x, int y, Uint32 color)
