@@ -5,7 +5,7 @@
 namespace ants
 {
     const Uint32 Ant::COLOR = 0xFF000080;
-    const float Ant::HEAD_SIZE = 2, Ant::BODY_SIZE = 3, Ant::SPEED = 50, Ant::TURNINESS = 0.5;
+    const float Ant::HEAD_SIZE = 2, Ant::BODY_SIZE = 3, Ant::SPEED = 50, Ant::TURNINESS = 0.5, Ant::HOME_RADIUS = 20;
 
     void Ant::move(Uint32 elapsedMs, float screenWidth, float screenHeight)
     {

@@ -37,6 +37,6 @@ namespace ants
 
     bool Food::render(Screen &screen)
     {
-        screen.setPixel((int)round(x), (int)round(y), 0x00FF0055);
+        screen.setPixel((int)round(x), (int)round(y), 0x88FF8855);
     }
 }

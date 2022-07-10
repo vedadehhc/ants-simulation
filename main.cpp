@@ -87,7 +87,7 @@ int main(int argc, char *args[])
         screen.clear();
 
         // render ant home
-        
+        screen.drawFillCircle(ANT_HOME_X, ANT_HOME_Y, Ant::HOME_RADIUS, 0x0000FF80);
 
         // render food
         for (std::list<Food *>::iterator it = Food::foods.begin(); it != Food::foods.end(); it++)
