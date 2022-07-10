@@ -1,5 +1,5 @@
 #OBJS specifies which files to compile as part of the project
-OBJS = main.cpp
+OBJS = $(wildcard *.cpp)
 SOURCES = $(wildcard *.h) $(wildcard *.cpp)
 
 #CC specifies which compiler we're using

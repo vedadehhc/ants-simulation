@@ -21,10 +21,7 @@ namespace ants
         float x, y;
 
     public:
-        bool render(Screen& screen)
-        {
-            screen.setPixel((int) round(x), (int) round(y), 0x00FF0055);
-        }
+        bool render(Screen& screen);
     };
 }
 

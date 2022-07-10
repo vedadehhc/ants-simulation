@@ -1,6 +1,7 @@
 
 #include <list>
 #include "Food.h"
+#include "Screen.h"
 
 namespace ants
 {
@@ -32,5 +33,10 @@ namespace ants
         Food *f = *it;
         foods.erase(it);
         delete f;
+    }
+
+    bool Food::render(Screen &screen)
+    {
+        screen.setPixel((int)round(x), (int)round(y), 0x00FF0055);
     }
 }
