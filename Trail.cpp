@@ -5,11 +5,12 @@
 #include "Trail.h"
 #include "TrailPoint.h"
 #include "Screen.h"
+#include "ants.h"
 
 namespace ants
 {
 
-    Trail::Trail(Uint32 color, Screen &screen, int gridSize) : color(color), gridSize(gridSize)
+    Trail::Trail(Uint32 color, Screen &screen, int gridSize) : color(color), gridSize(gridSize), torus(0, 0, screen.getWidth(), screen.getHeight())
     {
         gridWidth = screen.getWidth() / gridSize;
         if (gridWidth * gridSize < screen.getWidth())
@@ -43,7 +44,7 @@ namespace ants
         delete[] points;
     }
 
-    bool Trail::pointInGrid(int x, int y)
+    bool Trail::pointInGrid(float x, float y)
     {
         return x >= 0 && x < gridSize * gridWidth && y >= 0 && y < gridSize * gridHeight;
     }
@@ -67,20 +68,25 @@ namespace ants
         return tp;
     }
 
-    std::list<TrailPoint *> **Trail::getNeighborhood(int x, int y, int& numNeighbors)
+    std::list<TrailPoint *> **Trail::getNeighborhood(float x, float y, float radius, int &numNeighbors)
     {
         if (!pointInGrid(x, y))
         {
             return nullptr;
         }
 
-        int l = std::max(x / gridSize - 1, 0);
-        int r = std::min(x / gridSize + 1, gridWidth - 1);
+        int l = (int)floor((x - radius) / gridSize);
+        int r = (int)ceil((x + radius) / gridSize);
 
-        int t = std::max(y / gridSize - 1, 0);
-        int b = std::min(y / gridSize + 1, gridHeight - 1);
+        int t = (int)floor((y - radius) / gridSize);
+        int b = (int)ceil((y + radius) / gridSize);
 
         numNeighbors = (r - l + 1) * (b - t + 1);
+        if (numNeighbors == 0)
+        {
+            return nullptr;
+        }
+
         std::list<TrailPoint *> **neighbors = new std::list<TrailPoint *> *[numNeighbors];
 
         int ind = 0;
@@ -88,12 +94,39 @@ namespace ants
         {
             for (int j = t; j <= b; j++)
             {
-                neighbors[ind] = (points + j * gridWidth + i);
+                neighbors[ind] = (points + uMod(j, gridHeight) * gridWidth + uMod(i, gridWidth));
                 ind++;
             }
         }
 
         return neighbors;
+    }
+
+    float Trail::getStrength(float x, float y, float radius)
+    {
+        int numNeighbors;
+        std::list<TrailPoint *> **neighbors = getNeighborhood(x, y, radius, numNeighbors);
+
+        if (neighbors == nullptr || numNeighbors == 0)
+        {
+            return 0;
+        }
+
+        float total = 0;
+        for (int i = 0; i < numNeighbors; i++)
+        {
+            for (auto it = neighbors[i]->begin(); it != neighbors[i]->end(); it++)
+            {
+                if (pointInCircleTorus((*it)->getX(), (*it)->getY(), x, y, radius, torus))
+                {
+                    total += (*it)->getLifetime() / (*it)->getMaxLifetime();
+                }
+            }
+        }
+
+        delete[] neighbors;
+        
+        return total;
     }
 
     void Trail::update(Uint32 elapsedMs)

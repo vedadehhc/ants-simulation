@@ -48,7 +48,7 @@ bool processEvent(SDL_Event &e)
 
 int main(int argc, char *args[])
 {
-    Screen screen(720, 720, "Ants");
+    Screen screen(700, 700, "Ants");
 
     if (!screen.init())
         return 1;
@@ -56,8 +56,8 @@ int main(int argc, char *args[])
     screen.setEventProcessor(processEvent);
 
     // initialize trails
-    Trail exploreTrail(0x0000FFFF, screen, Ant::SMELL_RANGE);
-    Trail returnTrail(0xFFCC00FF, screen, Ant::SMELL_RANGE);
+    Trail exploreTrail(0x0000FFFF, screen, Ant::SMELL_RANGE + 1);
+    Trail returnTrail(0xFFCC00FF, screen, Ant::SMELL_RANGE + 1);
 
     // initialize ants
     const int NUM_ANTS = 100;
@@ -75,7 +75,7 @@ int main(int argc, char *args[])
     const int NUM_FOOD = 1000;
     for (int i = 0; i < NUM_FOOD; i++)
     {
-        float r = randFloat() * 30;
+        float r = randFloat() * 20;
         float t = randFloat() * M_PI * 2;
         Food::addFood(screen.getWidth() / 2 + r * cos(t), screen.getHeight() / 4 + r * sin(t));
     }

@@ -5,7 +5,8 @@
 
 namespace ants
 {
-    const Uint32 Food::COLOR = 0x88FF8855;
+    const Uint32 Food::COLOR = 0x88FF88CC;
+    const float Food::SIZE = 2;
 
     std::list<Food *> Food::foods;
 
@@ -39,6 +40,6 @@ namespace ants
 
     bool Food::render(Screen &screen)
     {
-        screen.addToPixel(x, y, COLOR);
+        screen.drawFillCircle(x, y, SIZE, COLOR);
     }
 }

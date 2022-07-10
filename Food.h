@@ -12,6 +12,7 @@ namespace ants
     {
     public:
         static const Uint32 COLOR;
+        static const float SIZE;
 
         static std::list<Food *> foods;
         static Food *addFood(float x, float y);

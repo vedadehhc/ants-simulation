@@ -9,11 +9,21 @@ namespace ants
     const float Ant::HEAD_SIZE = 2;
     const float Ant::BODY_SIZE = 3;
     const float Ant::SPEED = 50;
-    const float Ant::TURNINESS = 0.5;
+    const float Ant::SPEED_VARIANCE = 5;
+    const float Ant::TURNINESS = 0.3;
     const float Ant::HOME_RADIUS = 20;
-    const float Ant::SMELL_RANGE = 10;
-    const float Ant::PICK_RANGE = 5;
+    const float Ant::SMELL_RANGE = 5;
+    const float Ant::PICK_RANGE = 1;
     const float Ant::TRAIL_STRENGTH = 10;
+
+    Ant::Ant(float x, float y, Trail *exploreTrail, Trail *returnTrail) : x(x), y(y), exploreTrail(exploreTrail), returnTrail(returnTrail)
+    {
+        homeX = x;
+        homeY = y;
+        direction = randFloat() * 2 * M_PI;
+        carryingFood = false;
+        speed = SPEED + (randFloat() - 0.5) * SPEED_VARIANCE;
+    }
 
     void Ant::move(Uint32 elapsedMs, float screenWidth, float screenHeight)
     {
@@ -41,7 +51,7 @@ namespace ants
                     break;
                 }
             }
-        } 
+        }
 
         // allow target readjustment if found food on same frame
         if (carryingFood)
@@ -54,32 +64,25 @@ namespace ants
             {
                 carryingFood = false;
             }
+            else if (pointInCircle(x, y, homeX, homeY, HOME_RADIUS + SMELL_RANGE))
+            {
+                targetTrail = nullptr;
+                setDirection(atan2(homeY - y, homeX - x));
+            }
         }
 
         if (dispenseTrail != nullptr)
             dispenseTrail->addTrailPoint(x, y, TRAIL_STRENGTH);
 
-        float trailDir = -2;
-
         if (targetTrail != nullptr)
-            trailDir = followTrail(targetTrail);
+            setDirection(followTrail(targetTrail));
 
-        if (trailDir < -1)
-        {
-            setDirection(direction + (randFloat() - 0.5) * TURNINESS);
-        }
-        else
-        {
-            // printf("following trail: %f", trailDir);
-            setDirection(trailDir);
-            // still a little random
-            setDirection(direction + (randFloat() - 0.5) * TURNINESS);
-        }
+        setDirection(direction + (randFloat() - 0.5) * TURNINESS);
 
         float deltaTime = elapsedMs / 1000.0;
 
-        float dx = deltaTime * SPEED * cos(direction);
-        float dy = deltaTime * SPEED * sin(direction);
+        float dx = deltaTime * speed * cos(direction);
+        float dy = deltaTime * speed * sin(direction);
 
         x = rangeMod(x + dx, 0, screenWidth);
         y = rangeMod(y + dy, 0, screenHeight);
@@ -87,44 +90,23 @@ namespace ants
 
     float Ant::followTrail(Trail *trail)
     {
-        float totalX = 0;
-        float totalY = 0;
-        float totalWeight = 0;
-        bool foundPoints = false;
+        float FOV = 0.5f;
 
-        int numNeighbors;
-        auto neighbors = trail->getNeighborhood(x, y, numNeighbors);
+        float center = trail->getStrength(x + SMELL_RANGE * cos(direction), y + SMELL_RANGE * sin(direction), SMELL_RANGE);
+        float left = trail->getStrength(x + SMELL_RANGE * cos(direction + FOV), y + SMELL_RANGE * sin(direction + FOV), SMELL_RANGE);
+        float right = trail->getStrength(x + SMELL_RANGE * cos(direction - FOV), y + SMELL_RANGE * sin(direction - FOV), SMELL_RANGE);
 
-        for (int i = 0; i < numNeighbors; i++)
+        if (center >= left && center >= right)
         {
-            for (auto it = neighbors[i]->begin(); it != neighbors[i]->end(); it++)
-            {
-                if ((*it)->getLifetime() > 0 && pointInCircle((*it)->getX(), (*it)->getY(), x, y, SMELL_RANGE))
-                {
-                    foundPoints = true;
-
-                    float dirToPoint = rangeMod(atan2((*it)->getY() - y, (*it)->getX() - x), 0, 2 * M_PI);
-                    // float weight = (*it)->getLifetime() / (1 + sqDistance(x, y, (*it)->getX(), (*it)->getY()));
-                    float weight = (*it)->getLifetime();
-                
-                    totalX += cos(dirToPoint) * weight;
-                    totalY += sin(dirToPoint) * weight;
-                    totalWeight += weight;
-                }
-            }
+            return direction;
         }
-
-        delete[] neighbors;
-
-        if (foundPoints)
+        else if (left > right)
         {
-            // float ret = -atan2(totalY / totalWeight, totalX / totalWeight);
-            // printf("RETURNING %f\n", ret);
-            return rangeMod(-atan2(totalY / totalWeight, totalX / totalWeight), 0, 2 * M_PI);
+            return direction + FOV;
         }
         else
         {
-            return -2;
+            return direction - FOV;
         }
     }
 
@@ -137,6 +119,12 @@ namespace ants
         bool result = false;
         result |= screen.drawFillCircle(x, y, BODY_SIZE, COLOR);
         result |= screen.drawFillCircle(x + (HEAD_SIZE + BODY_SIZE) * cos(direction), y + (HEAD_SIZE + BODY_SIZE) * sin(direction), HEAD_SIZE, COLOR);
+
+        if (carryingFood)
+        {
+            result |= screen.drawFillCircle(x + (2 * HEAD_SIZE + BODY_SIZE) * cos(direction), y + (2 * HEAD_SIZE + BODY_SIZE) * sin(direction), HEAD_SIZE, Food::COLOR);
+        }
+
         return result;
     }
 }

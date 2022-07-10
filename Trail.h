@@ -5,6 +5,7 @@
 
 #include "TrailPoint.h"
 #include "Screen.h"
+#include "ants.h"
 
 namespace ants
 {
@@ -17,6 +18,7 @@ namespace ants
         int gridWidth, gridHeight, gridSize;
         std::list<TrailPoint *> *points;
         Uint32 color;
+        Box torus;
 
     public:
         Trail(Uint32 color, Screen& screen, int gridSize);
@@ -24,11 +26,12 @@ namespace ants
 
         Uint32 getColor() { return color; }
 
-        bool pointInGrid(int x, int y);
+        bool pointInGrid(float x, float y);
         int gridIndex(int x, int y);
 
         TrailPoint *addTrailPoint(float x, float y, float lifetime);
-        std::list<TrailPoint *>** getNeighborhood(int x, int y, int& numNeighbors);
+        std::list<TrailPoint *>** getNeighborhood(float x, float y, float radius, int& numNeighbors);
+        float getStrength(float x, float y, float radius);
 
         void update(Uint32 elapsedMs);
         bool render(Screen &screen);

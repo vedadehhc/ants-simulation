@@ -26,6 +26,7 @@ namespace ants
         float getX() { return x; }
         float getY() { return y; }
         float getLifetime() { return lifetime; }
+        float getMaxLifetime() { return maxLifetime; }
     };
 }
 

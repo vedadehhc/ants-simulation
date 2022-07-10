@@ -13,13 +13,14 @@ namespace ants
     class Ant
     {
     public:
-        const static float HEAD_SIZE, BODY_SIZE, SPEED, TURNINESS, HOME_RADIUS, SMELL_RANGE, PICK_RANGE, TRAIL_STRENGTH;
+        const static float HEAD_SIZE, BODY_SIZE, SPEED, SPEED_VARIANCE, TURNINESS, HOME_RADIUS, SMELL_RANGE, PICK_RANGE, TRAIL_STRENGTH;
         const static Uint32 COLOR;
 
     private:
         float x, y;
         float homeX, homeY;
         float direction;
+        float speed;
         bool carryingFood;
 
         Trail *exploreTrail;
@@ -37,13 +38,7 @@ namespace ants
 
     public:
         Ant() : x(0), y(0) {}
-        Ant(float x, float y, Trail *exploreTrail, Trail *returnTrail) : x(x), y(y), exploreTrail(exploreTrail), returnTrail(returnTrail)
-        {
-            homeX = x;
-            homeY = y;
-            direction = randFloat() * 2 * M_PI;
-            carryingFood = false;
-        }
+        Ant(float x, float y, Trail *exploreTrail, Trail *returnTrail);
 
         void move(Uint32 elapsedMs, float screenWidth, float screenHeight);
 
