@@ -5,7 +5,7 @@
 namespace ants
 {
     const Uint32 Ant::COLOR = 0xFF000080;
-    const float Ant::SIZE = 2, Ant::SPEED = 50, Ant::TURNINESS = 0.5;
+    const float Ant::HEAD_SIZE = 2, Ant::BODY_SIZE = 3, Ant::SPEED = 50, Ant::TURNINESS = 0.5;
 
     void Ant::move(Uint32 elapsedMs, float screenWidth, float screenHeight)
     {
@@ -25,6 +25,10 @@ namespace ants
     // TODO: update render to display partial wrapping
     bool Ant::render(Screen &screen)
     {
-        return screen.drawFillSquare((int)floor(x - SIZE), (int)floor(y - SIZE), (int)ceil(x + SIZE), (int)ceil(y + SIZE), COLOR);
+        // return screen.drawFillSquare((int)floor(x - SIZE), (int)floor(y - SIZE), (int)ceil(x + SIZE), (int)ceil(y + SIZE), COLOR);
+        bool result = false;
+        result |= screen.drawFillCircle(x, y, BODY_SIZE, COLOR);
+        result |= screen.drawFillCircle(x + (HEAD_SIZE + BODY_SIZE) * cos(direction), y + (HEAD_SIZE + BODY_SIZE) * sin(direction), HEAD_SIZE, COLOR);
+        return result;
     }
 }

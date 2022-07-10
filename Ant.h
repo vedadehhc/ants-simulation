@@ -12,7 +12,7 @@ namespace ants
     class Ant
     {
     public:
-        const static float SIZE, SPEED, TURNINESS;
+        const static float HEAD_SIZE, BODY_SIZE, SPEED, TURNINESS;
         const static Uint32 COLOR;
 
     private:
