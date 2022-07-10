@@ -6,7 +6,13 @@
 namespace ants
 {
     const Uint32 Ant::COLOR = 0xFF000080;
-    const float Ant::HEAD_SIZE = 2, Ant::BODY_SIZE = 3, Ant::SPEED = 50, Ant::TURNINESS = 0.5, Ant::HOME_RADIUS = 20, Ant::RANGE = 5;
+    const float Ant::HEAD_SIZE = 2;
+    const float Ant::BODY_SIZE = 3;
+    const float Ant::SPEED = 50;
+    const float Ant::TURNINESS = 0.5;
+    const float Ant::HOME_RADIUS = 20;
+    const float Ant::RANGE = 5;
+    const float Ant::TRAIL_STRENGTH = 10;
 
     void Ant::move(Uint32 elapsedMs, float screenWidth, float screenHeight)
     {
@@ -20,6 +26,7 @@ namespace ants
 
         if (!carryingFood)
         {
+            exploreTrail->addTrailPoint(x, y, TRAIL_STRENGTH);
             direction += (randFloat() - 0.5) * TURNINESS;
 
             // go thru all foods
@@ -35,6 +42,7 @@ namespace ants
         }
         else
         {
+            returnTrail->addTrailPoint(x, y, TRAIL_STRENGTH);
             // TODO: change this behavior
             direction = atan2(homeY - y, homeX - x);
 

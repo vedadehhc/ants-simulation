@@ -2,7 +2,6 @@
 #define FOOD_H
 
 #include <list>
-#include <cmath>
 
 #include "Screen.h"
 

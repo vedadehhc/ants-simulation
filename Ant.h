@@ -6,13 +6,14 @@
 
 #include "Screen.h"
 #include "ants.h"
+#include "Trail.h"
 
 namespace ants
 {
     class Ant
     {
     public:
-        const static float HEAD_SIZE, BODY_SIZE, SPEED, TURNINESS, HOME_RADIUS, RANGE;
+        const static float HEAD_SIZE, BODY_SIZE, SPEED, TURNINESS, HOME_RADIUS, RANGE, TRAIL_STRENGTH;
         const static Uint32 COLOR;
 
     private:
@@ -20,6 +21,9 @@ namespace ants
         float homeX, homeY;
         float direction;
         bool carryingFood;
+
+        Trail *exploreTrail;
+        Trail *returnTrail;
 
     public:
         void setDirection(float newDir)
@@ -29,7 +33,7 @@ namespace ants
 
     public:
         Ant() : x(0), y(0) {}
-        Ant(float x, float y) : x(x), y(y)
+        Ant(float x, float y, Trail *exploreTrail, Trail *returnTrail) : x(x), y(y), exploreTrail(exploreTrail), returnTrail(returnTrail)
         {
             homeX = x;
             homeY = y;

@@ -9,6 +9,7 @@
 #include "Screen.h"
 #include "Ant.h"
 #include "Food.h"
+#include "Trail.h"
 
 using namespace ants;
 
@@ -54,6 +55,10 @@ int main(int argc, char *args[])
 
     screen.setEventProcessor(processEvent);
 
+    // initialize trails
+    Trail exploreTrail(0x0000FFFF);
+    Trail returnTrail(0xFFCC00FF);
+
     // initialize ants
     const int NUM_ANTS = 100;
     const int ANT_HOME_X = screen.getWidth() / 2;
@@ -63,7 +68,7 @@ int main(int argc, char *args[])
 
     for (int i = 0; i < NUM_ANTS; i++)
     {
-        ants[i] = Ant(ANT_HOME_X, ANT_HOME_Y);
+        ants[i] = Ant(ANT_HOME_X, ANT_HOME_Y, &exploreTrail, &returnTrail);
     }
 
     // initialize food
@@ -88,6 +93,13 @@ int main(int argc, char *args[])
 
         // render ant home
         screen.drawFillCircle(ANT_HOME_X, ANT_HOME_Y, Ant::HOME_RADIUS, 0x0000FF80);
+
+        // update + render trails
+        exploreTrail.update(elapsed);        
+        returnTrail.update(elapsed);
+        
+        exploreTrail.render(screen);
+        returnTrail.render(screen);
 
         // render food
         for (std::list<Food *>::iterator it = Food::foods.begin(); it != Food::foods.end(); it++)
