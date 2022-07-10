@@ -101,6 +101,12 @@ namespace ants
             m_buffer[i] = 0x000000FF;
         }
     }
+    
+    // Returns true if at least part of this box is on screen
+    bool Screen::boxInBounds(int minX, int minY, int maxX, int maxY)
+    {
+        return minX < width && maxX >= 0 && minY < height && maxY >= 0;
+    }
 
     int Screen::pixelIndex(int x, int y)
     {
@@ -131,8 +137,13 @@ namespace ants
         if (minX > maxX || minY > maxY)
             return false;
 
-        if (minX >= width || maxX < 0 || minY >= height || maxY < 0)
+        if (!boxInBounds(minX, minY, maxX, maxY))
             return false;
+
+        minX = std::max(minX, 0);
+        maxX = std::min(maxX, width - 1);
+        minY = std::max(minY, 0);
+        maxY = std::min(maxY, height - 1);
 
         for (int i = minX; i <= maxX; i++)
         {
@@ -140,13 +151,60 @@ namespace ants
             addToPixel(i, maxY, color);
         }
 
-        for (int i = minY; i <= maxY; i++)
+        for (int i = minY + 1; i <= maxY - 1; i++)
         {
             addToPixel(minX, i, color);
             addToPixel(maxX, i, color);
         }
 
         return true;
+    }
+
+    bool Screen::drawFillSquare(int minX, int minY, int maxX, int maxY, Uint32 color)
+    {
+        if (minX > maxX || minY > maxY)
+            return false;
+
+        if (!boxInBounds(minX, minY, maxX, maxY))
+            return false;
+
+        minX = std::max(minX, 0);
+        maxX = std::min(maxX, width - 1);
+        minY = std::max(minY, 0);
+        maxY = std::min(maxY, height - 1);
+
+        for (int i = minX; i <= maxX; i++)
+        {
+            for (int j = minY; j <= maxY; j++)
+            {
+                addToPixel(i, j, color);
+            }
+        }
+
+        return true;
+    }
+
+    bool Screen::drawFillCircle(float cx, float cy, float radius, Uint32 color)
+    {
+        int startX = floor(cx - radius);
+        int endX = ceil(cx + radius);
+
+        int startY = floor(cy - radius);
+        int endY = ceil(cy + radius);
+
+        if (!boxInBounds(startX, startY, endX, endY))
+            return false;
+        
+        bool result = false;
+        for (int i = startX; i <= endX; i++)
+        {
+            for (int j = startY; j <= endY; j++)
+            {
+                if (pointInCircle(i + 0.5, j + 0.5, cx, cy, radius))
+                    result |= addToPixel(i, j, color);
+            }
+        }
+        return result;
     }
 
     void Screen::update()

@@ -9,7 +9,7 @@ namespace ants
     float sqDistance(float x1, float y1, float x2, float y2);
     bool pointInCircle(float px, float py, float cx, float cy, float radius);
 
-    float clamp(float val, float min, float max);
+    float rangeMod(float val, float min, float max);
 
     void colorComponentsInt(Uint32 color, int& r, int& g, int& b, int& a);
 

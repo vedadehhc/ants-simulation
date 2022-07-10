@@ -4,6 +4,7 @@
 
 namespace ants
 {
+    const Uint32 Ant::COLOR = 0xFF000080;
     const float Ant::SIZE = 2, Ant::SPEED = 50, Ant::TURNINESS = 0.5;
 
     void Ant::move(Uint32 elapsedMs, float screenWidth, float screenHeight)
@@ -15,8 +16,8 @@ namespace ants
         float dx = deltaTime * SPEED * cos(direction);
         float dy = deltaTime * SPEED * sin(direction);
 
-        x = clamp(x + dx, 0, screenWidth);
-        y = clamp(y + dy, 0, screenHeight);
+        x = rangeMod(x + dx, 0, screenWidth);
+        y = rangeMod(y + dy, 0, screenHeight);
     }
 
     // Renders the ant to the screen.
@@ -24,27 +25,6 @@ namespace ants
     // TODO: update render to display partial wrapping
     bool Ant::render(Screen &screen)
     {
-        int startX = std::max((int)floor(x - SIZE), 0);
-        int endX = std::min((int)ceil(x + SIZE), screen.getWidth() - 1);
-
-        int startY = std::max((int)floor(y - SIZE), 0);
-        int endY = std::min((int)ceil(y + SIZE), screen.getHeight() - 1);
-
-        if (startX >= screen.getWidth() || endX < 0 || startY >= screen.getHeight() || endY < 0)
-        {
-            return false;
-        }
-
-        // Try rendering on screen
-        bool result = false;
-        for (int i = startX; i <= endX; i++)
-        {
-            for (int j = startY; j <= endY; j++)
-            {
-                if (pointInCircle(i + 0.5, j + 0.5, x, y, SIZE))
-                    result |= screen.setPixel(i, j, COLOR);
-            }
-        }
-        return result;
+        return screen.drawFillSquare((int)floor(x - SIZE), (int)floor(y - SIZE), (int)ceil(x + SIZE), (int)ceil(y + SIZE), COLOR);
     }
 }

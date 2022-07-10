@@ -46,7 +46,12 @@ namespace ants
 		bool setPixel(int x, int y, Uint32 color);
 		bool addToPixel(int x, int y, Uint32 color);
 
+		// Returns true if at least part of this box is on screen
+		bool boxInBounds(int minX, int minY, int maxX, int maxY);
+
 		bool drawSquare(int minX, int minY, int maxX, int maxY, Uint32 color);
+		bool drawFillSquare(int minX, int minY, int maxX, int maxY, Uint32 color);
+		bool drawFillCircle(float cx, float cy, float radius, Uint32 color);
 
 		void update();
 

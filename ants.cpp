@@ -1,5 +1,6 @@
 #include <SDL.h>
 #include <cmath>
+#include <stdio.h>
 
 #include "ants.h"
 
@@ -20,7 +21,7 @@ namespace ants
         return sqDistance(px, py, cx, cy) <= radius * radius;
     }
 
-    float clamp(float val, float min, float max)
+    float rangeMod(float val, float min, float max)
     {
         float size = max - min;
         val = fmod(val - min, size);
@@ -32,8 +33,8 @@ namespace ants
     void colorComponentsInt(Uint32 color, int& r, int& g, int& b, int& a)
     {
         r = color >> 24;
-        g = color >> 16;
-        b = color >> 8;
+        g = (color >> 16) & 0xFF;
+        b = (color >> 8) & 0xFF;
         a = color & 0xFF;
     }
 

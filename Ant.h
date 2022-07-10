@@ -13,7 +13,7 @@ namespace ants
     {
     public:
         const static float SIZE, SPEED, TURNINESS;
-        const static Uint32 COLOR = 0xFF0000FF;
+        const static Uint32 COLOR;
 
     private:
         float x, y;
