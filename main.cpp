@@ -8,6 +8,7 @@
 
 #include "Screen.h"
 #include "Ant.h"
+#include "Food.h"
 
 using namespace ants;
 
@@ -53,13 +54,25 @@ int main(int argc, char *args[])
 
     screen.setEventProcessor(processEvent);
 
-
+    // initialize ants
     const int NUM_ANTS = 100;
-    Ant* ants = new Ant[NUM_ANTS];
+    const int ANT_HOME_X = screen.getWidth() / 2;
+    const int ANT_HOME_Y = 3 * screen.getHeight() / 4;
 
-    for(int i = 0; i < NUM_ANTS; i++)
+    Ant *ants = new Ant[NUM_ANTS];
+
+    for (int i = 0; i < NUM_ANTS; i++)
     {
-        ants[i] = Ant(rand() % screen.getWidth(), rand() % screen.getHeight());
+        ants[i] = Ant(ANT_HOME_X, ANT_HOME_Y);
+    }
+
+    // initialize food
+    const int NUM_FOOD = 1000;
+    for (int i = 0; i < NUM_FOOD; i++)
+    {
+        float r = randFloat() * 50;
+        float t = randFloat() * M_PI * 2;
+        Food::addFood(screen.getWidth() / 2 + r * cos(t), screen.getHeight() / 4 + r * sin(t));
     }
 
     // Main game loop
@@ -73,6 +86,16 @@ int main(int argc, char *args[])
 
         screen.clear();
 
+        // render ant home
+        
+
+        // render food
+        for (std::list<Food *>::iterator it = Food::foods.begin(); it != Food::foods.end(); it++)
+        {
+            (*it)->render(screen);
+        }
+
+        // render ants
         for (int i = 0; i < NUM_ANTS; i++)
         {
             ants[i].move(elapsed, screen.getWidth(), screen.getHeight());
@@ -86,6 +109,7 @@ int main(int argc, char *args[])
     }
 
     delete[] ants;
+    Food::deleteAll();
     screen.close();
 
     return 0;

@@ -13,9 +13,11 @@ namespace ants
     {
     public:
         const static float SIZE, SPEED, TURNINESS;
+        const static Uint32 COLOR = 0xFF0000FF;
 
     private:
         float x, y;
+        float homeX, homeY;
         float direction;
 
     public:
@@ -25,12 +27,11 @@ namespace ants
         }
 
     public:
-        Ant() : x(0), y(0)
-        {
-            direction = randFloat() * 2 * M_PI;
-        }
+        Ant() : x(0), y(0) {}
         Ant(float x, float y) : x(x), y(y)
         {
+            homeX = x;
+            homeY = y;
             direction = randFloat() * 2 * M_PI;
         }
 
@@ -69,8 +70,8 @@ namespace ants
             {
                 for (int j = startY; j <= endY; j++)
                 {
-                    // if (pointInCircle(i + 0.5, j + 0.5, x, y, ANT_SIZE))
-                    result |= screen.setPixel(i, j, 0xFF0000FF);
+                    if (pointInCircle(i + 0.5, j + 0.5, x, y, SIZE))
+                        result |= screen.setPixel(i, j, COLOR);
                 }
             }
             return result;
