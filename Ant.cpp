@@ -1,23 +1,49 @@
 
 #include "Ant.h"
 #include "ants.h"
+#include "Food.h"
 
 namespace ants
 {
     const Uint32 Ant::COLOR = 0xFF000080;
-    const float Ant::HEAD_SIZE = 2, Ant::BODY_SIZE = 3, Ant::SPEED = 50, Ant::TURNINESS = 0.5, Ant::HOME_RADIUS = 20;
+    const float Ant::HEAD_SIZE = 2, Ant::BODY_SIZE = 3, Ant::SPEED = 50, Ant::TURNINESS = 0.5, Ant::HOME_RADIUS = 20, Ant::RANGE = 5;
 
     void Ant::move(Uint32 elapsedMs, float screenWidth, float screenHeight)
     {
         float deltaTime = elapsedMs / 1000.0;
-
-        direction += (randFloat() - 0.5) * TURNINESS;
 
         float dx = deltaTime * SPEED * cos(direction);
         float dy = deltaTime * SPEED * sin(direction);
 
         x = rangeMod(x + dx, 0, screenWidth);
         y = rangeMod(y + dy, 0, screenHeight);
+
+        if (!carryingFood)
+        {
+            direction += (randFloat() - 0.5) * TURNINESS;
+
+            // go thru all foods
+            for (std::list<Food *>::iterator it = Food::foods.begin(); it != Food::foods.end(); it++)
+            {
+                if (pointInCircle((*it)->getX(), (*it)->getY(), x, y, RANGE))
+                {
+                    carryingFood = true;
+                    Food::deleteFood(it);
+                    break;
+                }
+            }
+        }
+        else
+        {
+            // TODO: change this behavior
+            direction = atan2(homeY - y, homeX - x);
+
+            // drop off food
+            if (pointInCircle(x, y, homeX, homeY, HOME_RADIUS))
+            {
+                carryingFood = false;
+            }
+        }
     }
 
     // Renders the ant to the screen.

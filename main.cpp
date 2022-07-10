@@ -67,7 +67,7 @@ int main(int argc, char *args[])
     }
 
     // initialize food
-    const int NUM_FOOD = 1000;
+    const int NUM_FOOD = 5000;
     for (int i = 0; i < NUM_FOOD; i++)
     {
         float r = randFloat() * 50;

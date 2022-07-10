@@ -8,10 +8,12 @@
 
 namespace ants
 {
-    
+
     class Food
     {
     public:
+        static const Uint32 COLOR;
+
         static std::list<Food *> foods;
         static Food *addFood(float x, float y);
         static void deleteAll();
@@ -21,7 +23,9 @@ namespace ants
         float x, y;
 
     public:
-        bool render(Screen& screen);
+        bool render(Screen &screen);
+        float getX() { return x; }
+        float getY() { return y; }
     };
 }
 

@@ -12,13 +12,14 @@ namespace ants
     class Ant
     {
     public:
-        const static float HEAD_SIZE, BODY_SIZE, SPEED, TURNINESS, HOME_RADIUS;
+        const static float HEAD_SIZE, BODY_SIZE, SPEED, TURNINESS, HOME_RADIUS, RANGE;
         const static Uint32 COLOR;
 
     private:
         float x, y;
         float homeX, homeY;
         float direction;
+        bool carryingFood;
 
     public:
         void setDirection(float newDir)
@@ -33,6 +34,7 @@ namespace ants
             homeX = x;
             homeY = y;
             direction = randFloat() * 2 * M_PI;
+            carryingFood = false;
         }
 
         void move(Uint32 elapsedMs, float screenWidth, float screenHeight);
