@@ -13,7 +13,7 @@ namespace ants
     class Ant
     {
     public:
-        const static float HEAD_SIZE, BODY_SIZE, SPEED, TURNINESS, HOME_RADIUS, RANGE, TRAIL_STRENGTH;
+        const static float HEAD_SIZE, BODY_SIZE, SPEED, TURNINESS, HOME_RADIUS, SMELL_RANGE, PICK_RANGE, TRAIL_STRENGTH;
         const static Uint32 COLOR;
 
     private:
@@ -24,6 +24,10 @@ namespace ants
 
         Trail *exploreTrail;
         Trail *returnTrail;
+
+        // looks for a trail. if found, returns a direction between 0 and 2 * PI
+        // if not found, returns -2
+        float followTrail(Trail* trail);
 
     public:
         void setDirection(float newDir)

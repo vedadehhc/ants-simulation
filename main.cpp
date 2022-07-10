@@ -56,8 +56,8 @@ int main(int argc, char *args[])
     screen.setEventProcessor(processEvent);
 
     // initialize trails
-    Trail exploreTrail(0x0000FFFF);
-    Trail returnTrail(0xFFCC00FF);
+    Trail exploreTrail(0x0000FFFF, screen, Ant::SMELL_RANGE);
+    Trail returnTrail(0xFFCC00FF, screen, Ant::SMELL_RANGE);
 
     // initialize ants
     const int NUM_ANTS = 100;
@@ -72,10 +72,10 @@ int main(int argc, char *args[])
     }
 
     // initialize food
-    const int NUM_FOOD = 5000;
+    const int NUM_FOOD = 1000;
     for (int i = 0; i < NUM_FOOD; i++)
     {
-        float r = randFloat() * 50;
+        float r = randFloat() * 30;
         float t = randFloat() * M_PI * 2;
         Food::addFood(screen.getWidth() / 2 + r * cos(t), screen.getHeight() / 4 + r * sin(t));
     }
@@ -97,7 +97,7 @@ int main(int argc, char *args[])
         // update + render trails
         exploreTrail.update(elapsed);        
         returnTrail.update(elapsed);
-        
+
         exploreTrail.render(screen);
         returnTrail.render(screen);
 
